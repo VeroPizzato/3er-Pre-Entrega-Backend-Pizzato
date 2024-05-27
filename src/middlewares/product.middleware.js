@@ -1,8 +1,10 @@
-const { ProductsStorage } = require('../persistence/products.storage')
+// const { ProductsStorage } = require('../persistence/products.storage')
+const { ProductDAO } = require('../dao/mongo/product.dao')
+
 const { ProductsService } = require('../services/products.service')
 
-const productsStorage = new ProductsStorage()
-const productsService = new ProductsService(productsStorage)
+const productDAO = new ProductDAO()
+const productsService = new ProductsService(productDAO)
 
 const soloNumYletras = (code) => {
     return (/^[a-z A-Z 0-9]+$/.test(code))

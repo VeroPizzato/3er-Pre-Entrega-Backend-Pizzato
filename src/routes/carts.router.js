@@ -7,7 +7,7 @@ const Router = require('./router')
 const withController = callback => {
     return (req, res) => {
         const service = new CartsService(
-            req.app.get('carts.storage')
+            req.app.get('carts.dao')
         )                       
         const controller = new CartsController(service)
         return callback(controller, req, res)

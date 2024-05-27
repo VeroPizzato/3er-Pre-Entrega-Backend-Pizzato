@@ -5,15 +5,14 @@ const { CartsService } = require('../services/carts.service')
 const { ProductsService } = require('../services/products.service')
 
 const Router = require('./router')
-const { ProductsStorage } = require('../persistence/products.storage')
 
 const withController = callback => {
     return (req, res) => {        
         const cartsService = new CartsService(           
-            req.app.get('carts.storage')
+            req.app.get('carts.dao')
         )                    
         const productsService = new ProductsService(           
-            req.app.get('products.storage')
+            req.app.get('products.dao')
         )             
         const controller = new ViewsController(cartsService, productsService)
         return callback(controller, req, res)

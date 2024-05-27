@@ -12,7 +12,7 @@ class CartDAO {
         }
         else {
             const carts = await this.getCarts()
-            CartsStorage.#ultimoIdCart = this.#getNuevoIdInicio(carts)
+            CartDAO.#ultimoIdCart = this.#getNuevoIdInicio(carts)
         }
     }
 

@@ -1,12 +1,14 @@
-const { CartsStorage } = require('../persistence/carts.storage')
+//const { CartsStorage } = require('../persistence/carts.storage')
+const { CartDAO } = require('../dao/mongo/cart.dao')
 const { CartsService } = require('../services/carts.service')
-const { ProductsStorage } = require('../persistence/products.storage')
+//const { ProductsStorage } = require('../persistence/products.storage')
+const { ProductDAO } = require('../dao/mongo/product.dao')
 const { ProductsService } = require('../services/products.service')
 
-const cartsStorage = new CartsStorage()
-const cartsService = new CartsService(cartsStorage)
-const productsStorage = new ProductsStorage()
-const productsService = new ProductsService(productsStorage)
+const cartDAO = new CartDAO()
+const cartsService = new CartsService(cartDAO)
+const productDAO = new ProductDAO()
+const productsService = new ProductsService(productDAO)
 
 module.exports = {
     // Middleware para validacion de datos al agregar un carrito 

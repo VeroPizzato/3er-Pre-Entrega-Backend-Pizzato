@@ -1,4 +1,4 @@
-const User = require('../dao/models/user.model')
+//const User = require('../dao/models/user.model')
 //const { hashPassword } = require('../utils/hashing')
 const passport = require('passport')
 // const passportMiddleware = require('../utils/passportMiddleware')

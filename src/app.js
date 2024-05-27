@@ -6,9 +6,14 @@ const session = require('express-session')
 const MongoStore = require('connect-mongo')
 const cookieParser = require('cookie-parser')
 const config = require('./config/config')
-const { CartsStorage } = require('./persistence/carts.storage')
-const { JwtStorage } = require('./persistence/jwt.storage')
-const { ProductsStorage } = require('./persistence/products.storage')
+
+// const { CartsStorage } = require('./persistence/carts.storage')
+// const { JwtStorage } = require('./persistence/jwt.storage')
+// const { ProductsStorage } = require('./persistence/products.storage')
+
+const { CartDAO } = require('./dao/mongo/cart.dao')
+const { UserDAO } = require('./dao/mongo/user.dao')
+const { ProductDAO } = require('./dao/mongo/product.dao')
 
 const CartsRouter = require('./routes/carts.router')
 const cartsRouter = new CartsRouter().getRouter()
@@ -25,7 +30,7 @@ const jwtRouter = new JwtRouter().getRouter()
 const ViewsRouter = require('./routes/views.router')
 const viewsRouter = new ViewsRouter().getRouter()
 
-const chatModel = require('./dao/models/chat.model')
+const chatModel = require('./dao/mongo/models/chat.model')
 
 const FilesProductManager = require('./dao/fileManagers/ProductManager')
 const DbProductManager = require('./dao/dbManagers/ProductManager')
@@ -101,15 +106,15 @@ const main = async () => {
             dbName: config.DB_NAME
         })
 
-    const cartsStorage = new CartsStorage();
-    await cartsStorage.inicialize()
-    app.set('carts.storage', cartsStorage)
+    const cartDAO = new CartDAO();
+    await cartDAO.inicialize()
+    app.set('carts.dao', cartDAO)
 
-    app.set('jwt.storage', new JwtStorage())
+    app.set('user.dao', new UserDAO())
 
-    const productsStorage = new ProductsStorage();
-    await productsStorage.inicialize()
-    app.set('products.storage', productsStorage)
+    const productDAO = new ProductDAO();
+    await productDAO.inicialize()
+    app.set('products.dao', productDAO)
 
     // const ProductManager = new DbProductManager()
     // await ProductManager.inicialize()

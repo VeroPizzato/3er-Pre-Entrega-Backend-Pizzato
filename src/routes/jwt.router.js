@@ -1,4 +1,4 @@
-const User = require('../dao/models/user.model')
+//const User = require('../dao/models/user.model')
 const { isValidPassword } = require('../utils/hashing')
 const { generateToken, verifyToken } = require('../utils/jwt')
 // const passport = require('passport')
@@ -12,7 +12,7 @@ const Router = require('./router')
 const withController = callback => {
     return (req, res) => {
         const service = new JwtServices(
-            req.app.get('jwt.storage')
+            req.app.get('jwt.dao')
         )                       
         const controller = new JwtController(service)
         return callback(controller, req, res)
