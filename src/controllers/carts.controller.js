@@ -1,7 +1,9 @@
+const { CartsService } = require('../services/carts.service')
+
 class CartsController {
 
-    constructor(cartsService) {
-        this.service = cartsService
+    constructor() {
+        this.service = new CartsService()
     }
 
     async getCarts (req, res) {
@@ -22,8 +24,9 @@ class CartsController {
             let cidCart = req.cid
             let cartByCID = await this.service.getCartByCId(cidCart)
             if (!cartByCID) {
-                return res.sendNotFoundError('Id inexistente!')
-                //return res.status(404).json({ error: "Id inexistente!" })  // HTTP 404 => el ID es válido, pero no se encontró ese carrito                
+                return cartByCID === false
+                ? res.sendNotFoundError({ message: 'Not found!' }, 404)
+                : res.sendServerError({ message: 'Something went wrong!' })
             }
             res.sendSuccess(cartByCID)
             //res.status(200).json(cartByCID)    // HTTP 200 OK     

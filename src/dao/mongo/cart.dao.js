@@ -1,40 +1,10 @@
 const CartModel = require("./models/cart.model")
 
 class CartDAO {
-
-    static #ultimoIdCart = 1
-  
-    inicialize = async () => {
-        // No hacer nada
-        // Podríamos chequear que la conexión existe y está funcionando
-        if (CartModel.db.readyState !== 1) {
-            throw new Error('must connect to mongodb!')
-        }
-        else {
-            const carts = await this.getCarts()
-            CartDAO.#ultimoIdCart = this.#getNuevoIdInicio(carts)
-        }
-    }
-
-    #getNuevoIdInicio = (carts) => {
-        let mayorID = 1
-        carts.forEach(item => {
-            if (mayorID <= item.id)
-                mayorID = item.id
-        });
-        mayorID = mayorID + 1
-        return mayorID
-    }
-
-    #getNuevoId() {
-        const id = CartDAO.#ultimoIdCart
-        CartDAO.#ultimoIdCart++
-        return id
-    }
-
+     
     getCarts = async () => {
-        try {            
-            const carts = await CartModel.find()      
+        try {
+            const carts = await CartModel.find()
             return carts.map(d => d.toObject({ virtuals: true }))
         }
         catch (err) {
@@ -43,28 +13,27 @@ class CartDAO {
     }
 
     getCartByCId = async (cid) => {
-        const cart = await CartModel.findOne({ _id: cid }).populate('products._id')
-        if (cart){
-            // console.log(JSON.stringify(cart, null, 4));
-            return cart
+        try {
+            const cart = await CartModel.findOne({ _id: cid }).populate('products._id')
+            return cart?.toObject() ?? false
         }
-        else {
-            console.error(`Carrito con ID: ${cid} Not Found`)
-            return
+        catch (err) {
+            console.error(err)
+            return null
         }
     }
 
     addCart = async (products) => {
-        let nuevoCarrito = await CartModel.create({
-            id: this.#getNuevoId(),
+        let nuevoCarrito = await CartModel.create({           
             products
-        }) 
+        })
     }
 
     addProductToCart = async (cid, pid, quantity) => {
-        const cart = await this.getCartByCId(cid)      
-        const listadoProducts = cart.products;       
-        const codeProduIndex = listadoProducts.findIndex(elem => elem._id._id.toString() === pid);        
+        const cart = await this.getCartByCId(cid)
+        if (!cart) return false
+        const listadoProducts = cart.products;
+        const codeProduIndex = listadoProducts.findIndex(elem => elem._id._id.toString() === pid);
         if (codeProduIndex === -1) {
             let productoNuevo = {
                 _id: pid,
@@ -80,6 +49,7 @@ class CartDAO {
     updateCartProducts = async (cartId, products) => {
         //obtengo el carrito
         const cart = await this.getCartByCId(cid)
+        if (!cart) return false
         cart.products = products
         await CartModel.updateOne({ _id: cid }, cart)
     }
@@ -89,26 +59,28 @@ class CartDAO {
     }
 
     deleteProductToCart = async (cartId, prodId) => {
-         //obtengo el carrito
-         const cart = await this.getCartByCId(cid)
-         //obtengo los productos del carrito        
-         const productsFromCart = cart.products
-         const productIndex = productsFromCart.findIndex(item => item._id.toString() === pid)
-         if (productIndex != -1) {
-             //existe el producto en el carrito, puedo eliminarlo
-             productsFromCart.splice(productIndex, 1)
-             await CartModel.updateOne({ _id: cid }, cart)
-             return true
-         }
-         else {
-             // no existe el producto en el carito
-             return false
-         }
+        //obtengo el carrito
+        const cart = await this.getCartByCId(cid)
+        if (!cart) return false
+        //obtengo los productos del carrito        
+        const productsFromCart = cart.products
+        const productIndex = productsFromCart.findIndex(item => item._id.toString() === pid)
+        if (productIndex != -1) {
+            //existe el producto en el carrito, puedo eliminarlo
+            productsFromCart.splice(productIndex, 1)
+            await CartModel.updateOne({ _id: cid }, cart)
+            return true
+        }
+        else {
+            // no existe el producto en el carito
+            return false
+        }
     }
 
     // deleteAllProductCart = async (cid) => {
     //     //obtengo el carrito
     //     const cart = await this.getCartByCId(cid)
+    //     if (!cart) return false
     //     cart.products = []
     //     await CartModel.updateOne({ _id: cid }, cart)
     // }

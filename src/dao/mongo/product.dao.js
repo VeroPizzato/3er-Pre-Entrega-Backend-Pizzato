@@ -1,30 +1,7 @@
 const ProductModel = require("./models/products.model")
 
 class ProductDAO {
-    static #ultimoIdProducto = 1
- 
-    inicialize = async () => {
-        // No hacer nada
-        // Podríamos chequear que la conexión existe y está funcionando
-        if (ProductModel.db.readyState !== 1) {
-            throw new Error('must connect to mongodb!')
-        }
-        else {
-            const products = await this.getProducts({})
-            ProductDAO.#ultimoIdProducto = this.#getNuevoIdInicio(products.docs)
-        }
-    }
-
-    #getNuevoIdInicio = (products) => {
-        let mayorID = 1
-        products.forEach(item => {
-            if (mayorID <= item.id)
-                mayorID = item.id
-        });
-        mayorID = mayorID + 1
-        return mayorID
-    }
-
+    
     getProducts = async (filters) => {
         try {
             let filteredProducts = await ProductModel.find()
@@ -42,10 +19,10 @@ class ProductDAO {
                 // return filteredProducts.docs.map(d => d.toObject({ virtuals: true }))
                 return filteredProducts
             }
-           
+
             if (!page) page = 1
             const { limit, category, availability, sort } = { limit: 10, page: page, availability: 1, sort: 'asc', ...filters }
-         
+
             if (availability == 1) {
                 if (category)
                     filteredProducts = await ProductModel.paginate({ category: category, stock: { $gt: 0 } }, { limit: limit, page: page, sort: { price: sort }, lean: true })
@@ -68,24 +45,19 @@ class ProductDAO {
     }
 
     getProductById = async (idProd) => {
-        const producto = await ProductModel.findOne({ _id: idProd })
-        if (producto)
-            return producto
-        else {
-            console.error(`Producto con ID: ${idProd} Not Found`)
-            return
+        try {
+            const producto = await ProductModel.findOne({ _id: idProd })
+            return producto?.toObject() ?? false
+        }
+        catch (err) {
+            console.error(err)
+            return null
         }
     }
-
-    #getNuevoId() {
-        const id = ProductDAO.#ultimoIdProducto
-        ProductDAO.#ultimoIdProducto++
-        return id
-    }   
+  
 
     addProduct = async (title, description, price, thumbnail, code, stock, status, category) => {
-        let product = await ProductModel.create({
-            id: this.#getNuevoId(),
+        let product = await ProductModel.create({            
             title,
             description,
             price,

@@ -7,14 +7,6 @@ const MongoStore = require('connect-mongo')
 const cookieParser = require('cookie-parser')
 const config = require('./config/config')
 
-// const { CartsStorage } = require('./persistence/carts.storage')
-// const { JwtStorage } = require('./persistence/jwt.storage')
-// const { ProductsStorage } = require('./persistence/products.storage')
-
-const { CartDAO } = require('./dao/mongo/cart.dao')
-const { UserDAO } = require('./dao/mongo/user.dao')
-const { ProductDAO } = require('./dao/mongo/product.dao')
-
 const CartsRouter = require('./routes/carts.router')
 const cartsRouter = new CartsRouter().getRouter()
 
@@ -31,12 +23,6 @@ const ViewsRouter = require('./routes/views.router')
 const viewsRouter = new ViewsRouter().getRouter()
 
 const chatModel = require('./dao/mongo/models/chat.model')
-
-const FilesProductManager = require('./dao/fileManagers/ProductManager')
-const DbProductManager = require('./dao/dbManagers/ProductManager')
-
-const FilesCartManager = require('./dao/fileManagers/CartManager')
-const DbCartManager = require('./dao/dbManagers/CartManager')
 
 const passport = require('passport')
 
@@ -80,12 +66,6 @@ initializeStrategy()
 app.use(passport.initialize())
 app.use(passport.session())
 
-// app.use('/api/products', productsRouter.getRouter())
-// app.use('/api/carts', cartsRouter.getRouter())
-// app.use('/', viewsRouter.getRouter())
-// app.use('/api/sessions', sessionRouter.getRouter())
-// app.use('/api', jwtRouter.getRouter())
-
 const main = async () => {
 
     // configurar rutas de nuestro backend
@@ -105,35 +85,7 @@ const main = async () => {
         {
             dbName: config.DB_NAME
         })
-
-    const cartDAO = new CartDAO();
-    await cartDAO.inicialize()
-    app.set('carts.dao', cartDAO)
-
-    app.set('user.dao', new UserDAO())
-
-    const productDAO = new ProductDAO();
-    await productDAO.inicialize()
-    app.set('products.dao', productDAO)
-
-    // const ProductManager = new DbProductManager()
-    // await ProductManager.inicialize()
-    // app.set('ProductManager', ProductManager)
-
-    // const CartManager = new DbCartManager()
-    // await CartManager.inicialize()
-    // app.set('CartManager', CartManager)
-
-    // const filenameProd = `${__dirname}/../productos.json`    
-    // const ProductManager = new FilesProductManager(filenameProd)
-    // await ProductManager.inicialize()
-    // app.set('ProductManager', ProductManager)
-
-    // const filenameCart = `${__dirname}/../carrito.json`  
-    // const CartManager = new FilesCartManager(filenameCart)
-    // await CartManager.inicialize()
-    // app.set('CartManager', CartManager)
-
+    
     const httpServer = app.listen(config.PORT, () => {
         console.log('Servidor listo!!')
     })

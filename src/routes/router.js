@@ -3,9 +3,24 @@ const { Router } = require('express')
 class BaseRouter {
     constructor() {
         this.router = Router()
+        this.router.param('pid', (req, res, next, value) => {
+            const isValid = /^[a-z0-9]+$/.test(value)
+            if (!isValid)               
+                return res.status(400).send('Invalid param pid')
+            req.pid = value
+            next()
+        })
+
+        this.router.param('cid', (req, res, next, value) => {
+            const isValid = /^[a-z0-9]+$/.test(value)            
+            if (!isValid)                
+                return res.status(400).send('Invalid param cid')
+            req.cid = value
+            next()
+        })
         this.init()
     }
-
+    
     getRouter() {
         return this.router
     }

@@ -1,7 +1,9 @@
+const { Product } = require('../dao')
+
 class ProductsService {   
     
-    constructor(storage) { 
-        this.storage = storage       
+    constructor() { 
+        this.storage = new Product()       
     }
 
     async getProducts (filters) {    

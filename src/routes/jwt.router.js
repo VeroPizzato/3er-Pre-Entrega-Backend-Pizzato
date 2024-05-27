@@ -1,20 +1,15 @@
-//const User = require('../dao/models/user.model')
 const { isValidPassword } = require('../utils/hashing')
 const { generateToken, verifyToken } = require('../utils/jwt')
 // const passport = require('passport')
 const passportMiddleware = require('../utils/passportMiddleware')
 const authorizationMiddleware = require('../utils/authorizationMiddleware')
 const { JwtController } = require('../controllers/jwt.controller')
-const { JwtServices } = require('../services/jwt.service')
 const config = require('../config/config')
 const Router = require('./router')
 
 const withController = callback => {
-    return (req, res) => {
-        const service = new JwtServices(
-            req.app.get('jwt.dao')
-        )                       
-        const controller = new JwtController(service)
+    return (req, res) => {        
+        const controller = new JwtController()
         return callback(controller, req, res)
     }
 }

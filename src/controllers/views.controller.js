@@ -1,8 +1,11 @@
+const { CartsService } = require('../services/carts.service')
+const { ProductsService } = require('../services/products.service')
+
 class ViewsController {
 
-    constructor(cartsService, productsService) {         
-        this.cartsService = cartsService
-        this.productsService = productsService
+    constructor() {         
+        this.cartsService = new CartsService()
+        this.productsService = new ProductsService()
     }
 
     home (req, res) {
@@ -95,6 +98,11 @@ class ViewsController {
         try {
             const prodId = req.pid
             const product = await this.productsService.getProductById(prodId)
+            if (!product) {
+                return product === false
+                ? res.sendNotFoundError({ message: 'Not found!' }, 404)
+                : res.sendServerError({ message: 'Something went wrong!' })
+            }
             let data = {
                 title: 'Product Detail',
                 scripts: ['productoDetail.js'],
@@ -129,6 +137,11 @@ class ViewsController {
         try {
             const cartId = req.cid
             const cart = await this.cartsService.getCartByCId(cartId)
+            if (!cart) {
+                return cart === false
+                ? res.sendNotFoundError({ message: 'Not found!' }, 404)
+                : res.sendServerError({ message: 'Something went wrong!' })
+            }
             let data = {
                 title: 'Cart Detail',
                 styles: ['styles.css'],

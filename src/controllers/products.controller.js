@@ -1,7 +1,9 @@
+const { ProductsService } = require('../services/products.service')
+
 class ProductsController {
 
-    constructor(productsService) {
-        this.service = productsService
+    constructor() {
+        this.service = new ProductsService()
     }
 
     async getProducts (req, res) {
@@ -44,8 +46,9 @@ class ProductsController {
             const prodId = req.pid
             const producto = await this.service.getProductById(prodId)
             if (!producto) {
-                return res.sendNotFoundError('Id inexistente!')
-                // return res.status(404).json({ error: "Id inexistente!" })  // HTTP 404 => el ID es válido, pero no se encontró ese producto                
+                return producto === false
+                ? res.sendNotFoundError({ message: 'Not found!' }, 404)
+                : res.sendServerError({ message: 'Something went wrong!' })
             }
             return res.sendSuccess(producto)
             //res.status(200).json(producto)    // HTTP 200 OK
@@ -81,8 +84,9 @@ class ProductsController {
             // }
             const producto = await this.service.getProductById(prodId)
             if (!producto) {
-                return res.sendNotFoundError('Id inexistente!')
-                //return res.status(404).json({ error: "Id inexistente!" })  // HTTP 404 => el ID es válido, pero no se encontró ese producto                
+                return producto === false
+                ? res.sendNotFoundError({ message: 'Not found!' }, 404)
+                : res.sendServerError({ message: 'Something went wrong!' })
             }
             const result = this.service.updateProduct(prodId, datosAUpdate)
             return res.sendSuccess(result)
@@ -100,8 +104,9 @@ class ProductsController {
             const prodId = req.pid
             const producto = await this.service.getProductById(prodId)
             if (!producto) {
-                return res.sendNotFoundError('Id inexistente!')
-                // return res.status(404).json({ error: "Id inexistente!" })  // HTTP 404 => el ID es válido, pero no se encontró ese producto                
+                return producto === false
+                ? res.sendNotFoundError({ message: 'Not found!' }, 404)
+                : res.sendServerError({ message: 'Something went wrong!' })
             }
             await this.service.deleteProduct(prodId)
             return res.sendSuccess('Producto Eliminado correctamente')

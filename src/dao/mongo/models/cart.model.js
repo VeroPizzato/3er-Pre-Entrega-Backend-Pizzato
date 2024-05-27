@@ -2,12 +2,7 @@ const mongoose = require('mongoose')
 
 const cartCollection = 'carts';
 
-const cartSchema = new mongoose.Schema({
-    id: {
-        type: Number,
-        require: true,
-        unique: true
-    },
+const cartSchema = new mongoose.Schema({  
     products: {
         type: [
             {

@@ -1,7 +1,9 @@
+const { Cart } = require('../dao')
+
 class CartsService {
 
-    constructor(storage) {
-        this.storage = storage
+    constructor() {
+        this.storage = new Cart()
     }
 
     async getCarts () {

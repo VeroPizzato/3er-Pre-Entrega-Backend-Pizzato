@@ -2,7 +2,7 @@ const UserModel = require("./models/user.model")
 
 class UserDAO {
     login = async (email) => {  
-        const user = await userModel.findOne({ email })
+        const user = await UserModel.findOne( email )
         return user
     }
 
@@ -39,9 +39,9 @@ class UserDAO {
         }
     }
 
-    async updateUser(id, userData) {
+    async updateUser(email, pass) {
         try {
-            const result = await UserModel.updateOne({ _id: id }, { $set: userdata })
+            const result = await UserModel.updateOne({ email: email }, { $set: { password: pass }})
             return result
         }
         catch (err) {

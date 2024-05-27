@@ -1,39 +1,17 @@
 const { validarNuevoCarrito, validarCarritoExistente } = require('../middlewares/cart.middleware')
 const { validarProductoExistente } = require('../middlewares/product.middleware')
 const { CartsController } = require('../controllers/carts.controller')
-const { CartsService } = require('../services/carts.service')
 const Router = require('./router')
 
 const withController = callback => {
-    return (req, res) => {
-        const service = new CartsService(
-            req.app.get('carts.dao')
-        )                       
-        const controller = new CartsController(service)
+    return (req, res) => {       
+        const controller = new CartsController()
         return callback(controller, req, res)
     }
 }
 
 class CartsRouter extends Router {
-    init() {
-        this.router.param('pid', (req, res, next, value) => {
-            const isValid = /^[a-z0-9]+$/.test(value)
-            if (!isValid)
-                return sendUserError('Invalid param pid')
-                //return res.status(400).send('Invalid param pid')
-            req.pid = value
-            next()
-        })
-
-        this.router.param('cid', (req, res, next, value) => {
-            const isValid = /^[a-z0-9]+$/.test(value)            
-            if (!isValid)
-                return sendUserError('Invalid param cid')
-                //return res.status(400).send('Invalid param cid')
-            req.cid = value
-            next()
-        })
-
+    init() {      
         this.get('/', withController((controller, req, res) => controller.getCarts(req, res)))
 
         this.get('/:cid', validarCarritoExistente, withController((controller, req, res) => controller.getCartByCId(req, res)))     

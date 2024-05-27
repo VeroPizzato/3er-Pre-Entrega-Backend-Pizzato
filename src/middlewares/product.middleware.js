@@ -1,9 +1,9 @@
 // const { ProductsStorage } = require('../persistence/products.storage')
-const { ProductDAO } = require('../dao/mongo/product.dao')
+const { Product } = require('../dao')
 
 const { ProductsService } = require('../services/products.service')
 
-const productDAO = new ProductDAO()
+const productDAO = new Product()
 const productsService = new ProductsService(productDAO)
 
 const soloNumYletras = (code) => {
@@ -59,7 +59,7 @@ const validarNuevoProducto = async (req, res, next) => {
                 return
             }
         }
-        const listadoProductos = await this.productsService.getProducts(req.query)
+        const listadoProductos = await productsService.getProducts(req.query)
         const codeIndex = listadoProductos.docs.findIndex(e => e.code === product.code)
         if (codeIndex !== -1) {
             res.status(400).json({ error: "Codigo ya existente" })
@@ -87,7 +87,7 @@ const validarProdActualizado = async (req, res, next) => {
         const { title, description, price, thumbnail, code, stock, status, category } = req.body
         let idProd = req.params.pid
 
-        const listadoProductos = await this.productsService.getProducts(req.query)
+        const listadoProductos = await productsService.getProducts(req.query)
         const codeIndex = listadoProductos.docs.findIndex(e => e._id.toString() === idProd)
         if (codeIndex === -1) {
             res.status(400).json({ error: "Producto con ID:" + idProd + " not Found" })
@@ -156,10 +156,11 @@ const validarProductoExistente = async (req, res, next) => {
         //     res.status(400).json({ error: "Formato invalido." })
         //     return
         // }
-        const producto = await this.productsService.getProductById(prodId)
+        const producto = await productsService.getProductById(prodId)
         if (!producto) {
-            res.status(404).json({ error: "Id inexistente!" })  // HTTP 404 => el ID es válido, pero no se encontró ese producto
-            return
+            return producto === false
+                ? res.status({ message: 'Not found!' }, 404)
+                : res.status({ message: 'Something went wrong!' })
         }
         next()
     }

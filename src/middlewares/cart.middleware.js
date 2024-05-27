@@ -1,13 +1,13 @@
 //const { CartsStorage } = require('../persistence/carts.storage')
-const { CartDAO } = require('../dao/mongo/cart.dao')
+const { Cart } = require('../dao')
 const { CartsService } = require('../services/carts.service')
 //const { ProductsStorage } = require('../persistence/products.storage')
-const { ProductDAO } = require('../dao/mongo/product.dao')
+const { Product } = require('../dao')
 const { ProductsService } = require('../services/products.service')
 
-const cartDAO = new CartDAO()
+const cartDAO = new Cart()
 const cartsService = new CartsService(cartDAO)
-const productDAO = new ProductDAO()
+const productDAO = new Product()
 const productsService = new ProductsService(productDAO)
 
 module.exports = {
@@ -16,10 +16,11 @@ module.exports = {
         try {            
             const { products } = req.body
             products.forEach(async producto => {
-                const prod = await this.productsService.getProductById(producto._id)
+                const prod = await productsService.getProductById(producto._id)
                 if (!prod) {
-                    res.status(400).json({ error: "Producto con ID:" + producto._id + " not Found" })
-                    return
+                    return prod === false
+                    ? res.status({ message: 'Not found!' }, 404)
+                    : res.status({ message: 'Something went wrong!' })
                 }
                 if (isNaN(producto.quantity) || (!ProductManager.soloNumPositivos(producto.quantity))) {
                     res.status(400).json({ error: "Invalid quantity format" })
@@ -41,10 +42,11 @@ module.exports = {
             //     res.status(400).json({ error: "Invalid number format" })
             //     return
             // }
-            const cart = await this.cartsService.getCartByCId(cId)
+            const cart = await cartsService.getCartByCId(cId)
             if (!cart) {
-                res.status(400).json({ error: "Carrito con ID:" + cId + " not Found" })
-                return
+                return cart === false
+                    ? res.status({ message: 'Not found!' }, 404)
+                    : res.status({ message: 'Something went wrong!' })
             }
 
             next()

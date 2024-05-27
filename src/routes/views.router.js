@@ -1,44 +1,18 @@
 const { validarNuevoProducto } = require('../middlewares/product.middleware')
 const { userIsLoggedIn, userIsNotLoggedIn, userIsAdmin } = require('../middlewares/auth.middleware')
 const { ViewsController } = require('../controllers/views.controller')
-const { CartsService } = require('../services/carts.service')
-const { ProductsService } = require('../services/products.service')
 
 const Router = require('./router')
 
 const withController = callback => {
-    return (req, res) => {        
-        const cartsService = new CartsService(           
-            req.app.get('carts.dao')
-        )                    
-        const productsService = new ProductsService(           
-            req.app.get('products.dao')
-        )             
-        const controller = new ViewsController(cartsService, productsService)
+    return (req, res) => {                        
+        const controller = new ViewsController()
         return callback(controller, req, res)
     }
 }
 
 class ViewsRouter extends Router {
-    init() {
-        this.router.param('pid', (req, res, next, value) => {
-            const isValid = /^[a-z0-9]+$/.test(value)
-            if (!isValid)
-                return res.sendUserError('Invalid param pid')
-                //return res.status(400).send('Invalid param pid')
-            req.pid = value
-            next()
-        })
-
-        this.router.param('cid', (req, res, next, value) => {
-            const isValid = /^[a-z0-9]+$/.test(value)
-            if (!isValid)
-                return res.sendUserError('Invalid param cid')
-                //return res.status(400).send('Invalid param cid')
-            req.cid = value
-            next()
-        })
-
+    init() {       
         this.get('/', withController((controller, req, res) => controller.home(req, res)))
 
         this.get('/login', userIsNotLoggedIn, withController((controller, req, res) => controller.login(req, res)))

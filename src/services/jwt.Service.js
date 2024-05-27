@@ -1,10 +1,11 @@
 const config = require('../config/config')
 const { isValidPassword } = require('../utils/hashing')
+const { User } = require('../dao')
 
 class JwtServices {
 
-    constructor(storage) {
-        this.storage = storage
+    constructor() {
+        this.storage = new User()
     }
 
     async login (email, password) {      

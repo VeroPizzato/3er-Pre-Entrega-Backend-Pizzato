@@ -1,7 +1,10 @@
 const passport = require('passport')
 const localStrategy = require('passport-local')
 const githubStrategy = require('passport-github2')
-const User = require('../dao/mongo/models/user.model')
+//const User = require('../dao/mongo/models/user.model')
+const { User } = require('../dao')
+const UserDAO = new User() 
+
 const { hashPassword, isValidPassword } = require('../utils/hashing')
 const { Strategy, ExtractJwt } = require('passport-jwt')
 const config = require('../config/config')
@@ -33,7 +36,8 @@ const initializeStrategy = () => {
         try {
             console.log('Profile de github: ', profile, profile._json)
 
-            const user = await User.findOne({ email: profile._json.email })
+            //const user = await User.findOne({ email: profile._json.email })
+            const user = await UserDAO.login({ email: profile._json.email })
 
             if (user) {
                 return done(null, user)
@@ -53,7 +57,8 @@ const initializeStrategy = () => {
                 cart: null
             }
 
-            const result = await User.create(newUser)
+            //const result = await User.create(newUser)
+            const result = await UserDAO.saveUser(newUser)
             return done(null, result)
 
         }
@@ -71,7 +76,8 @@ const initializeStrategy = () => {
         const { first_name, last_name, age, email } = req.body
 
         try {
-            const user = await User.findOne({ email: username })
+            //const user = await User.findOne({ email: username })
+            const user = await UserDAO.login({ email: username })
             if (user) {
                 console.log('User already exists!')
 
@@ -88,7 +94,8 @@ const initializeStrategy = () => {
                 password: hashPassword(password),
                 cart: null
             }
-            const result = await User.create(newUser)
+            //const result = await User.create(newUser)
+            const result = await UserDAO.saveUser(newUser)
 
             // registro exitoso
             return done(null, result)
@@ -111,13 +118,15 @@ const initializeStrategy = () => {
                 return done(null, false)
             }
             // 1. verificar que el usuario exista en la BD
-            user = await User.findOne({ email: username })
+            //user = await User.findOne({ email: username })
+            user = await UserDAO.login({ email: username })
             if (!user) {
                 return done(null, false)
             }
 
             // actualizar la nueva contraseña
-            await User.updateOne({ email: username }, { $set: { password: hashPassword(password) } })
+            //await User.updateOne({ email: username }, { $set: { password: hashPassword(password) } })
+            await UserDAO.updateUser({ email: username }, hashPassword(password))
 
             return done(null, user)
         }
@@ -134,7 +143,8 @@ const initializeStrategy = () => {
                 return done(null, false)
             }
 
-            let user = await User.findOne({ email: username });
+            //let user = await User.findOne({ email: username });
+            let user = await UserDAO.login({ email: username });
             if (username === config.ADMIN_EMAIL && password === config.ADMIN_PASSWORD) {
                 // Datos de sesión para el usuario coder Admin
                 user = {
@@ -188,7 +198,8 @@ const initializeStrategy = () => {
             // Deserialización especial para el usuario 'adminCoder@coder.com'
             done(null, id);
         } else {
-            const user = await User.findById(id);
+            //const user = await User.findById(id);
+            const user = await UserDAO.getUserById(id);            
             done(null, user);
         }
     })

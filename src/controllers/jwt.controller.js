@@ -1,7 +1,9 @@
+const { JwtServices } = require('../services/jwt.service')
+
 class JwtController {
 
-    constructor(jwtService) {
-        this.service = jwtService
+    constructor() {
+        this.service = new JwtServices()
     }
 
     #handleError(res, err) {
