@@ -1,3 +1,4 @@
+//const ProductModel = require('../models/products.model')
 const ProductModel = require('../mongo/models/products.model')
 
 class ProductManager {
