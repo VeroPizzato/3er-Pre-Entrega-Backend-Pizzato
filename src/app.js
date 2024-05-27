@@ -11,19 +11,19 @@ const { JwtStorage } = require('./persistence/jwt.storage')
 const { ProductsStorage } = require('./persistence/products.storage')
 
 const CartsRouter = require('./routes/carts.router')
-const cartsRouter = new CartsRouter()
+const cartsRouter = new CartsRouter().getRouter()
 
 const ProductsRouter = require('./routes/products.router')
-const productsRouter = new ProductsRouter()
+const productsRouter = new ProductsRouter().getRouter()
 
 const SessionRouter = require('./routes/session.router')
-const sessionRouter = new SessionRouter()
+const sessionRouter = new SessionRouter().getRouter()
 
 const JwtRouter = require('./routes/jwt.router')
-const jwtRouter = new JwtRouter()
+const jwtRouter = new JwtRouter().getRouter()
 
 const ViewsRouter = require('./routes/views.router')
-const viewsRouter = new ViewsRouter()
+const viewsRouter = new ViewsRouter().getRouter()
 
 const chatModel = require('./dao/models/chat.model')
 
@@ -75,13 +75,26 @@ initializeStrategy()
 app.use(passport.initialize())
 app.use(passport.session())
 
-app.use('/api/products', productsRouter.getRouter())
-app.use('/api/carts', cartsRouter.getRouter())
-app.use('/', viewsRouter.getRouter())
-app.use('/api/sessions', sessionRouter.getRouter())
-app.use('/api', jwtRouter.getRouter())
+// app.use('/api/products', productsRouter.getRouter())
+// app.use('/api/carts', cartsRouter.getRouter())
+// app.use('/', viewsRouter.getRouter())
+// app.use('/api/sessions', sessionRouter.getRouter())
+// app.use('/api', jwtRouter.getRouter())
 
 const main = async () => {
+
+    // configurar rutas de nuestro backend
+    const routers = [        
+        { path: '/pi/products', router: productsRouter },
+        { path: '/api/carts', router: cartsRouter },
+        { path: '/', router: viewsRouter },
+        { path: '/api/sessions', router: sessionRouter },
+        { path: '/api', router: jwtRouter }
+    ]
+
+    for (const { path, router } of routers) {
+        app.use(path, await router)
+    }
 
     await mongoose.connect(config.MONGO_URL,
         {
@@ -96,7 +109,7 @@ const main = async () => {
 
     const productsStorage = new ProductsStorage();
     await productsStorage.inicialize()
-    app.set('products.storage', productsStorage) 
+    app.set('products.storage', productsStorage)
 
     // const ProductManager = new DbProductManager()
     // await ProductManager.inicialize()
