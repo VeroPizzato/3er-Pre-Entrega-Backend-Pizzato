@@ -1,6 +1,7 @@
 const UserModel = require("./models/user.model")
 
 class UserDAO {
+    
     login = async (email) => {  
         const user = await UserModel.findOne( email )
         return user

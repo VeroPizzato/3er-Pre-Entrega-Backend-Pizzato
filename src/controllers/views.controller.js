@@ -1,11 +1,13 @@
 const { CartsService } = require('../services/carts.service')
 const { ProductsService } = require('../services/products.service')
+const { Product: ProductDAO } = require('../dao')
+const { Cart: CartDAO } = require('../dao')
 
 class ViewsController {
 
     constructor() {         
-        this.cartsService = new CartsService()
-        this.productsService = new ProductsService()
+        this.cartsService = new CartsService(new CartDAO())
+        this.productsService = new ProductsService(new ProductDAO())
     }
 
     home (req, res) {

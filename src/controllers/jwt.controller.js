@@ -1,18 +1,10 @@
 const { JwtServices } = require('../services/jwt.service')
+const { User: UserDAO } = require('../dao')
 
 class JwtController {
 
     constructor() {
-        this.service = new JwtServices()
-    }
-
-    #handleError(res, err) {
-        if (err.message === 'not found') {
-            return res.sendNotFoundError(err)
-        }
-        if (err.message === 'invalid password') {
-            return res.sendUnauthorizedError(err)
-        }
+        this.service = new JwtServices(new UserDAO())
     }
 
     login (req, res) {

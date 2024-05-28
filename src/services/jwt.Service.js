@@ -1,11 +1,10 @@
 const config = require('../config/config')
 const { isValidPassword } = require('../utils/hashing')
-const { User } = require('../dao')
 
 class JwtServices {
 
-    constructor() {
-        this.storage = new User()
+    constructor(dao) {
+        this.dao = dao
     }
 
     async login (email, password) {      
@@ -23,7 +22,7 @@ class JwtServices {
             }
         }
         else {
-            user = await this.storage.login(email)
+            user = await this.dao.login(email)
             if (!user) {
                 //res.sendNotFoundError(err)
                 //return res.status(404).json({ error: 'User not found!' })

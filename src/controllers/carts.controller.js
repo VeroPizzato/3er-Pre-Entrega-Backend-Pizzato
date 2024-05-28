@@ -1,9 +1,10 @@
 const { CartsService } = require('../services/carts.service')
+const { Cart: CartDAO } = require('../dao')
 
 class CartsController {
 
     constructor() {
-        this.service = new CartsService()
+        this.service = new CartsService(new CartDAO())
     }
 
     async getCarts (req, res) {

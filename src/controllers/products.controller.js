@@ -1,9 +1,10 @@
 const { ProductsService } = require('../services/products.service')
+const { Product: ProductDAO } = require('../dao')
 
 class ProductsController {
 
     constructor() {
-        this.service = new ProductsService()
+        this.service = new ProductsService(new ProductDAO())
     }
 
     async getProducts (req, res) {
