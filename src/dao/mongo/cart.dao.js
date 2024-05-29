@@ -27,11 +27,12 @@ class CartDAO {
         let nuevoCarrito = await CartModel.create({           
             products
         })
+        return nuevoCarrito?.toObject() ?? null
     }
 
     addProductToCart = async (cid, pid, quantity) => {
         const cart = await this.getCartByCId(cid)
-        if (!cart) return false
+        if (!cart) cart = this.addCart([])        
         const listadoProducts = cart.products;
         const codeProduIndex = listadoProducts.findIndex(elem => elem._id._id.toString() === pid);
         if (codeProduIndex === -1) {
@@ -46,7 +47,7 @@ class CartDAO {
         await CartModel.updateOne({ _id: cid }, cart)
     }
 
-    updateCartProducts = async (cartId, products) => {
+    updateCartProducts = async (cid, products) => {
         //obtengo el carrito
         const cart = await this.getCartByCId(cid)
         if (!cart) return false
@@ -58,7 +59,7 @@ class CartDAO {
         await CartModel.deleteOne({ _id: cid });
     }
 
-    deleteProductToCart = async (cartId, prodId) => {
+    deleteProductToCart = async (cid, pid) => {
         //obtengo el carrito
         const cart = await this.getCartByCId(cid)
         if (!cart) return false

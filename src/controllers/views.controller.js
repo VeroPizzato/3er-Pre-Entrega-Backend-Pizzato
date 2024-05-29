@@ -123,10 +123,12 @@ class ViewsController {
     async addProductToCart (req, res) {
         try {
             const prodId = req.pid
+            //const user = req.session.user
             //agrego una unidad del producto al primer carrito que siempre existe
             const carts = await this.cartsService.getCarts()
-            // console.log(JSON.stringify(carts, null, '\t'))    
+            console.log(JSON.stringify(carts, null, '\t'))    
             await this.cartsService.addProductToCart(carts[0]._id.toString(), prodId, 1);
+            //await this.cartsService.addProductToCart(user.cart, prodId, 1);
             //res.redirect(`/products/detail/${prodId}`)  
         }
         catch (err) {
