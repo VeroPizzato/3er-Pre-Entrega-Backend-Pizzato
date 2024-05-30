@@ -3,7 +3,7 @@ const localStrategy = require('passport-local')
 const githubStrategy = require('passport-github2')
 //const User = require('../dao/mongo/models/user.model')
 const { User } = require('../dao')
-const UserDAO = new User() 
+const UserDAO = new User()
 
 const { hashPassword, isValidPassword } = require('../utils/hashing')
 const { Strategy, ExtractJwt } = require('passport-jwt')
@@ -15,8 +15,8 @@ const JwtStrategy = Strategy
 
 const cookieExtractor = req => req && req.cookies ? req.cookies['accessToken'] : null
 
-const initializeStrategy = () => {   
-    
+const initializeStrategy = () => {
+
     passport.use('jwt', new JwtStrategy({
         jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
         secretOrKey: config.SECRET
@@ -48,7 +48,7 @@ const initializeStrategy = () => {
             const first_name = fullName.substring(0, fullName.lastIndexOf(' '))
             const last_name = fullName.substring(fullName.lastIndexOf(' ') + 1)
 
-            const newUser = {               
+            const newUser = {
                 first_name,
                 last_name,
                 age: 47,
@@ -112,7 +112,7 @@ const initializeStrategy = () => {
             if (!username || !password) {
                 return done(null, false)
             }
-            
+
             let user
             if (username === "adminCodercoder.com") {
                 return done(null, false)
@@ -199,7 +199,7 @@ const initializeStrategy = () => {
             done(null, id);
         } else {
             //const user = await User.findById(id);
-            const user = await UserDAO.getUserById(id);            
+            const user = await UserDAO.getUserById(id);
             done(null, user);
         }
     })
