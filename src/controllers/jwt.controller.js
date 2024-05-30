@@ -1,5 +1,6 @@
 const { JwtServices } = require('../services/jwt.service')
 const { User: UserDAO } = require('../dao')
+const { UserDTO } = require('../dao/DTOs/user.dto')
 
 class JwtController {
 
@@ -41,8 +42,8 @@ class JwtController {
     }
 
     current (req, res) {
-        try {
-            res.sendSuccess(req.user)
+        try {           
+            res.sendSuccess(new UserDTO(req.user))
             //return res.json(req.user);
         }
         catch (err) {

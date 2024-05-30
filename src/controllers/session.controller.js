@@ -1,3 +1,5 @@
+const { UserDTO } = require("../dao/DTOs/user.dto")
+
 class SessionController {
 
     constructor() {
@@ -8,7 +10,8 @@ class SessionController {
         //if (!req.user) return res.status(400).send('Invalid credentials!')
         // crear nueva sesión si el usuario existe   
         //console.log(req.user)
-        req.session.user = { _id: req.user._id, first_name: req.user.first_name, last_name: req.user.last_name, age: req.user.age, email: req.user.email, rol: req.user.rol, cart: req.user.cart }
+        req.session.user = new UserDTO(req.user)
+        //req.session.user = { _id: req.user._id, first_name: req.user.first_name, last_name: req.user.last_name, age: req.user.age, email: req.user.email, rol: req.user.rol, cart: req.user.cart }
         return res.redirect('/products')
     }
 
@@ -44,14 +47,16 @@ class SessionController {
     }
 
     githubcallback (req, res) {
-        req.session.user = req.user
+        req.session.user = new UserDTO(req.user)
+        //req.session.user = req.user
         res.redirect('/products')
     }
 
     current (req, res) {
         if (!req.user) return res.sendUserError('No hay usuario logueado')
             //if (!req.user) return res.status(400).send('No hay usuario logueado')
-            req.session.user = { _id: req.user._id, first_name: req.user.first_name, last_name: req.user.last_name, age: req.user.age, email: req.user.email, rol: req.user.rol, cart: req.user.cart }
+            req.session.user = new UserDTO(req.user)
+            //req.session.user = { _id: req.user._id, first_name: req.user.first_name, last_name: req.user.last_name, age: req.user.age, email: req.user.email, rol: req.user.rol, cart: req.user.cart }
             res.redirect('/profile')
     }
 }

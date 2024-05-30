@@ -5,7 +5,7 @@ class CartDAO {
     getCarts = async () => {
         try {
             const carts = await CartModel.find()
-            return carts.map(d => d.toObject({ virtuals: true }))
+            return carts.map(d => d.toObject())
         }
         catch (err) {
             return []
@@ -14,7 +14,7 @@ class CartDAO {
 
     getCartByCId = async (cid) => {
         try {
-            const cart = await CartModel.findOne({ _id: cid }).populate('products._id')
+            const cart = await CartModel.findOne({ _id: cid }).populate('products._id')       
             return cart?.toObject() ?? false
         }
         catch (err) {

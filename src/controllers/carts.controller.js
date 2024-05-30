@@ -1,5 +1,6 @@
 const { CartsService } = require('../services/carts.service')
 const { Cart: CartDAO } = require('../dao')
+const { CartDTO } = require('../dao/DTOs/cart.dto')
 
 class CartsController {
 
@@ -9,8 +10,9 @@ class CartsController {
 
     async getCarts (req, res) {
         try {         
-            const carts = await this.service.getCarts()      
-            return res.sendSuccess(carts)
+            const carts = await this.service.getCarts()  
+            const cartsDTO = carts.map(cart => new CartDTO(cart))    
+            return res.sendSuccess(cartsDTO)
         }
         catch (err) {
             return res.sendServerError(err)
@@ -28,8 +30,8 @@ class CartsController {
                 return cartByCID === false
                 ? res.sendNotFoundError({ message: 'Not found!' }, 404)
                 : res.sendServerError({ message: 'Something went wrong!' })
-            }
-            res.sendSuccess(cartByCID)
+            }         
+            res.sendSuccess(new CartDTO(cartByCID))
             //res.status(200).json(cartByCID)    // HTTP 200 OK     
         }
         catch {

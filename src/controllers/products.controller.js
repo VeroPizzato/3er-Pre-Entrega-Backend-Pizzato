@@ -1,5 +1,6 @@
 const { ProductsService } = require('../services/products.service')
 const { Product: ProductDAO } = require('../dao')
+const { ProductDTO } = require('../dao/DTOs/product.dto')
 
 class ProductsController {
 
@@ -32,7 +33,7 @@ class ProductsController {
 
             // HTTP 200 OK
             //return res.status(200).json(objResult)
-            return res.sendSuccess(objResult)
+            return res.sendSuccess(new ProductDTO(products.docs))
         }
         catch (err) {
             return res.sendServerError(err)
@@ -51,7 +52,7 @@ class ProductsController {
                 ? res.sendNotFoundError({ message: 'Not found!' }, 404)
                 : res.sendServerError({ message: 'Something went wrong!' })
             }
-            return res.sendSuccess(producto)
+            return res.sendSuccess(new ProductDTO(producto))
             //res.status(200).json(producto)    // HTTP 200 OK
         } catch (err) {
             return res.sendServerError(err)

@@ -16,7 +16,7 @@ class ProductDAO {
 
             if (page && JSON.stringify(restOfFilters) === '{}') {
                 filteredProducts = await ProductModel.paginate({}, { page: page, lean: true })
-                // return filteredProducts.docs.map(d => d.toObject({ virtuals: true }))
+                // return filteredProducts.docs.map(d => d.toObject())
                 return filteredProducts
             }
 
@@ -37,7 +37,7 @@ class ProductDAO {
             }
 
             return filteredProducts
-            // return filteredProducts.map(d => d.toObject({ virtuals: true }))
+            // return filteredProducts.map(d => d.toObject())
         }
         catch (err) {
             return []

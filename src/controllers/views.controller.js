@@ -5,38 +5,38 @@ const { Cart: CartDAO } = require('../dao')
 
 class ViewsController {
 
-    constructor() {         
+    constructor() {
         this.cartsService = new CartsService(new CartDAO())
         this.productsService = new ProductsService(new ProductDAO())
     }
 
-    home (req, res) {
-        try {                 
+    home(req, res) {
+        try {
             const isLoggedIn = ![null, undefined].includes(req.session.user)
             res.render('index', {
                 title: 'Inicio',
                 isLoggedIn,
                 isNotLoggedIn: !isLoggedIn,
             })
-        } catch (err) {          
+        } catch (err) {
             return res.sendServerError(err)
             //return res.status(500).json({ message: err.message })
         }
     }
 
-    login (req, res) {
-        try {            
+    login(req, res) {
+        try {
             // middleware userIsNotLoggedIn: sólo se puede acceder si no está logueado
             res.render('login', {
                 title: 'Login'
             })
-        } catch (err) {           
+        } catch (err) {
             return res.sendServerError(err)
             //return res.status(500).json({ message: err.message })
         }
     }
 
-    reset_password (req, res) {
+    reset_password(req, res) {
         try {
             // middleware userIsNotLoggedIn: sólo se puede acceder si no está logueado
             res.render('reset_password', {
@@ -48,7 +48,7 @@ class ViewsController {
         }
     }
 
-    register (req, res) {
+    register(req, res) {
         try {
             // middleware userIsNotLoggedIn: sólo se puede acceder si no está logueado
             res.render('register', {
@@ -60,7 +60,7 @@ class ViewsController {
         }
     }
 
-    profile (req, res) {
+    profile(req, res) {
         try {
             //sólo se puede acceder si está logueado
             let user = req.session.user
@@ -79,9 +79,9 @@ class ViewsController {
         }
     }
 
-    async getProducts (req, res) {
-        try {             
-            let products = await this.productsService.getProducts(req.query) 
+    async getProducts(req, res) {
+        try {
+            let products = await this.productsService.getProducts(req.query)
             let user = req.session.user
             res.render('home', {
                 title: 'Home',
@@ -89,21 +89,21 @@ class ViewsController {
                 products,
                 user
             })
-        } catch (err) { 
-            console.log(err)                
+        } catch (err) {
+            console.log(err)
             return res.sendServerError(err)
             //return res.status(500).json({ message: err.message })            
         }
     }
 
-    async getProductDetail (req, res) {
+    async getProductDetail(req, res) {
         try {
             const prodId = req.pid
             const product = await this.productsService.getProductById(prodId)
             if (!product) {
                 return product === false
-                ? res.sendNotFoundError({ message: 'Not found!' }, 404)
-                : res.sendServerError({ message: 'Something went wrong!' })
+                    ? res.sendNotFoundError({ message: 'Not found!' }, 404)
+                    : res.sendServerError({ message: 'Something went wrong!' })
             }
             let data = {
                 title: 'Product Detail',
@@ -120,14 +120,15 @@ class ViewsController {
         }
     }
 
-    async addProductToCart (req, res) {
+    async addProductToCart(req, res) {
         try {
             const prodId = req.pid
             //const user = req.session.user
             //agrego una unidad del producto al primer carrito que siempre existe
             const carts = await this.cartsService.getCarts()
-            console.log(JSON.stringify(carts, null, '\t'))    
-            await this.cartsService.addProductToCart(carts[0]._id.toString(), prodId, 1);
+            //console.log(JSON.stringify(carts, null, '\t'))    
+            if (!carts) await this.cartsService.addCart([])
+            await this.cartsService.addProductToCart(carts[0]._id.toString(), prodId, 1)          
             //await this.cartsService.addProductToCart(user.cart, prodId, 1);
             //res.redirect(`/products/detail/${prodId}`)  
         }
@@ -137,14 +138,14 @@ class ViewsController {
         }
     }
 
-    async getCartById (req, res) {
+    async getCartById(req, res) {
         try {
             const cartId = req.cid
             const cart = await this.cartsService.getCartByCId(cartId)
             if (!cart) {
                 return cart === false
-                ? res.sendNotFoundError({ message: 'Not found!' }, 404)
-                : res.sendServerError({ message: 'Something went wrong!' })
+                    ? res.sendNotFoundError({ message: 'Not found!' }, 404)
+                    : res.sendServerError({ message: 'Something went wrong!' })
             }
             let data = {
                 title: 'Cart Detail',
@@ -160,7 +161,7 @@ class ViewsController {
         }
     }
 
-    async getRealTimeProducts (req, res) {
+    async getRealTimeProducts(req, res) {
         try {
             const products = await this.productsService.getProducts(req.query)
             res.render('realTimeProducts', {
@@ -179,7 +180,7 @@ class ViewsController {
         }
     }
 
-    async postRealTimeProducts (req, res) {
+    async postRealTimeProducts(req, res) {
         try {
             const product = req.body
             // Convertir el valor status "true" o "false" a booleano        
@@ -207,7 +208,7 @@ class ViewsController {
         }
     }
 
-    async newProduct (req, res) {
+    async newProduct(req, res) {
         try {
             res.render('newProduct', {
                 title: 'Nuevo Producto',
@@ -219,7 +220,7 @@ class ViewsController {
         }
     }
 
-    async chat (req, res) {
+    async chat(req, res) {
         try {
             res.render('chat', {
                 title: 'Aplicación de chat',

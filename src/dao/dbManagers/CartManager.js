@@ -32,7 +32,7 @@ class CartManager {
     getCarts = async () => {
         try {
             const carts = await CartModel.find()
-            return carts.map(d => d.toObject({ virtuals: true }))
+            return carts.map(d => d.toObject())
         }
         catch (err) {
             return []
