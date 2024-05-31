@@ -156,7 +156,8 @@ class CartsController {
     //     }
     // }
 
-    async HayStock(id, quantity) {
+    async HayStock(id, quantity) {   
+        console.log("ENTREEEEE")    
         const producto = await ProductsService.getProductById(id)
         const stock =  producto.stock
         if (stock < quantity) {
@@ -169,30 +170,34 @@ class CartsController {
     }
 
     async finalizarCompra (req, res) {
-        try {
-            let cartId = req.cid
-            let carrito = await this.service.getCartByCId(cartId)
-            let usuarioCarrito = req.session.user.email
+        try {        
+            let cartId = req.cid            
+            let carrito = await this.service.getCartByCId(cartId)          
+            let usuarioCarrito = 'VeroCoder'  // VER SI USAR EL EMAIL DEL USUARIO LOGUEADO               
             let totalCarrito = 0
             let cantidadItems = 0
             let cartItemsSinStock = []
             let arrayCartPendientes = []
-            if (carrito) {
-                await Promise.all(carrito.products.map(async (item) => {
-                    let hayStock = await HayStock(item.product, item.quantity)
-                    if (hayStock) {
-                        const id = item._id
+            if (carrito) {               
+                await Promise.all(carrito.products.map(async (item) => {  
+
+                    const id = item._id._id.toString()
+                    console.log(id) 
+                                                            
+                    let hayStock = await HayStock(id, item.quantity)                                       
+                    if (hayStock) {                      
                         const stockAReducir = item.quantity
 
-                        console.log(id._id, stockAReducir)
+                        console.log(stockAReducir)
+
                         const result = await ProductsService.updateProduct(id, { $inc: { stock: -stockAReducir } })
 
-                        const subtotal = stockAReducir * item.product.price
+                        const subtotal = stockAReducir * item._id.price
                         totalCarrito += subtotal
                         cantidadItems += item.quantity
-                    } else {
+                    } else {                      
                         arrayCartPendientes.push(item)
-                        cartItemsSinStock.push(item.product._id)
+                        cartItemsSinStock.push(item._id._id.toString())
                     }
                 }))
 
@@ -204,10 +209,9 @@ class CartsController {
                 const ticketCompra = await addTicket(newTicket)  // GENERAR TICKET
                 console.log(ticketCompra)
 
-                const prodSinComprar = await this.service.updateCartProducts(cid, arrayCartPendientes)
-
-                const cartItemsSinStockDTO = cartItemsSinStock.map(prod => new ProductDTO(prod))
-                return res.sendSuccess(cartItemsSinStockDTO)
+                const prodSinComprar = await this.service.updateCartProducts(cid, arrayCartPendientes)  // quedan en el carrito los productos que no se pudieron comprar
+             
+                return res.sendSuccess(cartItemsSinStock)  // devuelvo los id de los productos que no se puderon comprar
             }
         }
         catch (err) {
