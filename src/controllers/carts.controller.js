@@ -156,7 +156,7 @@ class CartsController {
     //         // })
     //     }
     // }
-
+  
     async HayStock(id, quantity) {
         try {           
             const producto = await this.productsService.getProductById(id)

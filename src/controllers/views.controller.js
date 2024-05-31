@@ -167,18 +167,29 @@ class ViewsController {
         try {                         
             const cartId = req.cid
             const cart = await this.cartsService.getCartByCId(cartId)
+            let isCartEmpty = null
+            if (cart.products.length === 0){
+                isCartEmpty = {
+                    icon: "info",
+                    title: "Carrito Vacio",
+                    text: "No hay productos en el carrito!"           
+                } 
+            }
+                                   
+            let data = {
+                title: 'Cart Detail',
+                styles: ['styles.css'],
+                useSweetAlert: true,
+                useWS: false,
+                isCartEmpty,
+                cart
+            }
+            res.render('detailCart', data)
             if (!cart) {
                 return cart === false
                     ? res.sendNotFoundError({ message: 'Not found!' }, 404)
                     : res.sendServerError({ message: 'Something went wrong!' })
             }
-            let data = {
-                title: 'Cart Detail',
-                styles: ['styles.css'],
-                useWS: false,
-                cart
-            }
-            res.render('detailCart', data)
         }
         catch (err) {        
             return res.sendServerError(err)
