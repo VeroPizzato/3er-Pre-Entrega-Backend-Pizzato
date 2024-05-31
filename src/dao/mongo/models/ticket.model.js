@@ -15,4 +15,4 @@ const ticketSchema = new mongoose.Schema({
     purchaser: String
 });
 
-module.exports = mongoose.model(ticketCollection, ticketSchema);
+module.exports = mongoose.model('Ticket', ticketSchema, ticketCollection)
