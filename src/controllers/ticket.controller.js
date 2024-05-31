@@ -6,6 +6,7 @@ const getTickets = async (req, res) => {
 }
 
 const addTicket = async (newTicket) => {
+    console.log("entre addTicket")
     const ticket = await add_Ticket(newTicket)
     return ticket
 }

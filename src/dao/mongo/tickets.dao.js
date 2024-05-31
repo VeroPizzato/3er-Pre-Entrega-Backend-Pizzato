@@ -1,11 +1,12 @@
-const { Ticket } = require('../mongo/models/ticket.model')
+const ticketModel = require('../mongo/models/ticket.model')
 
 const getAllTickets = async () => {
-    return await Ticket.find()
+    return await ticketModel.find()
 }
 
-const add_Ticket = async (newTicket) => {
-    const ticket = Ticket.create(newTicket)
+const add_Ticket = async (newTicket) => {    
+    const ticket = ticketModel.create(newTicket)
+    console.log(ticket)
     return ticket
 }
 
