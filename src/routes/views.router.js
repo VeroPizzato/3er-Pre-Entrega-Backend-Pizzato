@@ -27,7 +27,7 @@ class ViewsRouter extends Router {
 
         this.get('/products/detail/:pid', userIsLoggedIn, withController((controller, req, res) => controller.getProductDetail(req, res)))
 
-        this.get('/products/addcart/:pid', userIsUser, userIsLoggedIn, withController((controller, req, res) => controller.addProductToCart(req, res)))
+        this.get('/products/addcart/:pid', userIsLoggedIn, userIsUser, withController((controller, req, res) => controller.addProductToCart(req, res)))
 
         this.get('/carts/:cid', userIsLoggedIn, withController((controller, req, res) => controller.getCartById(req, res)))
 

@@ -176,8 +176,7 @@ class CartsController {
         try {            
             let cartId = req.cid
             let carrito = await this.cartsService.getCartByCId(cartId)
-            //let usuarioCarrito = req.session.user.email 
-            let usuarioCarrito = "VeroCoder"
+            let usuarioCarrito = req.session.user.email             
             let totalCarrito = 0
             let cantidadItems = 0
             let cartItemsSinStock = []
