@@ -1,6 +1,6 @@
 const { validarNuevoProducto, validarProductoExistente, validarProdActualizado } = require('../middlewares/product.middleware')
 const { ProductsController } = require('../controllers/products.controller')
-const { checkAdmin } = require('../middlewares/auth.middleware')
+const { userIsAdmin } = require('../middlewares/auth.middleware')
 
 const Router = require('./router')
 
@@ -17,11 +17,11 @@ class ProductsRouter extends Router {
 
         this.get('/:pid', validarProductoExistente, withController((controller, req, res) => controller.getProductById(req, res)))     
 
-        this.post('/', checkAdmin, validarNuevoProducto, withController((controller, req, res) => controller.addProduct(req, res))) 
+        this.post('/', userIsAdmin, validarNuevoProducto, withController((controller, req, res) => controller.addProduct(req, res))) 
                 
-        this.put('/:pid', checkAdmin, validarProductoExistente, validarProdActualizado, withController((controller, req, res) => controller.updateProduct(req, res)))
+        this.put('/:pid', userIsAdmin, validarProductoExistente, validarProdActualizado, withController((controller, req, res) => controller.updateProduct(req, res)))
 
-        this.delete('/:pid', checkAdmin, validarProductoExistente, withController((controller, req, res) => controller.deleteProduct(req, res)))      
+        this.delete('/:pid', userIsAdmin, validarProductoExistente, withController((controller, req, res) => controller.deleteProduct(req, res)))      
     }
 }
 

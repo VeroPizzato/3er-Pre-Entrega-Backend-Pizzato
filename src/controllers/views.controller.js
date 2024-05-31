@@ -127,19 +127,42 @@ class ViewsController {
             //agrego una unidad del producto al primer carrito que siempre existe
             const carts = await this.cartsService.getCarts()
             //console.log(JSON.stringify(carts, null, '\t'))    
-            if (!carts) await this.cartsService.addCart([])
-            await this.cartsService.addProductToCart(carts[0]._id.toString(), prodId, 1)          
+            if (!carts) await this.cartsService.addCart([])  
+            await this.cartsService.addProductToCart(carts[0]._id.toString(), prodId, 1)   
+            let product = await this.productsService.getProductById(prodId)         
+            this.mostrarAlertaCompra(res, carts[0]._id.toString(), product)     
             //await this.cartsService.addProductToCart(user.cart, prodId, 1);
             //res.redirect(`/products/detail/${prodId}`)  
         }
         catch (err) {
-            return res.sendServerError(err)
+            return res.sendServerError(err)            
             // return res.status(500).json({ message: err.message })
         }
     }
 
+    mostrarAlertaCompra = (res, cid, product) => {        
+        const alertaProductoAgregado = {
+            icon: 'success',
+            title: 'Compra confirmada',
+            text: 'Producto agregado al carrito exitosamente!'           
+        }     
+        
+        let data = {
+            title: 'Product Detail',
+            scripts: ['productoDetail.js'],
+            useSweetAlert: true,
+            styles: ['productos.css'],      
+            useWS: false,
+            product,
+            cid,
+            alertaProductoAgregado
+        }   
+        res.render('detailProduct', data)   
+    }
+
     async getCartById(req, res) {
         try {
+            console.log("entreee")
             const cartId = req.cid
             const cart = await this.cartsService.getCartByCId(cartId)
             if (!cart) {

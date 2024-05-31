@@ -26,7 +26,7 @@ class CartsController {
 
     async getCartByCId (req, res) {
         try {
-            let cidCart = req.cid
+            let cidCart = req.cid       
             let cartByCID = await this.service.getCartByCId(cidCart)
             if (!cartByCID) {
                 return cartByCID === false
@@ -156,7 +156,7 @@ class CartsController {
     //     }
     // }
 
-    async HayStock(id, quantity) {   
+    async HayStock (id, quantity) {   
         console.log("ENTREEEEE")    
         const producto = await ProductsService.getProductById(id)
         const stock =  producto.stock
@@ -170,7 +170,8 @@ class CartsController {
     }
 
     async finalizarCompra (req, res) {
-        try {        
+        try {    
+            console.log("ENTREEEEE finalizar compra") 
             let cartId = req.cid            
             let carrito = await this.service.getCartByCId(cartId)          
             let usuarioCarrito = 'VeroCoder'  // VER SI USAR EL EMAIL DEL USUARIO LOGUEADO               

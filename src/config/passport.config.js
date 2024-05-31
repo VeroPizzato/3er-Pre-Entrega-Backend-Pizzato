@@ -144,7 +144,7 @@ const initializeStrategy = () => {
             }
 
             //let user = await User.findOne({ email: username });
-            let user = await UserDAO.login({ email: username });
+            let user = await UserDAO.login({ email: username });          
             if (username === config.ADMIN_EMAIL && password === config.ADMIN_PASSWORD) {
                 // Datos de sesión para el usuario coder Admin
                 user = {
@@ -158,7 +158,7 @@ const initializeStrategy = () => {
                 };
                 return done(null, user);
             }
-
+         
             // 1. verificar que el usuario exista en la BD           
             if (!user) {
                 console.log("User doesn't exist")

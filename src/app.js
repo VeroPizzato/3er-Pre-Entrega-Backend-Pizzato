@@ -48,6 +48,7 @@ app.set("views", `${__dirname}/views`)
 app.set("view engine", "handlebars")
 
 app.use('/products/detail', express.static(`${__dirname}/../public`));  // para encontrar la carpeta public
+app.use('/products/addCart', express.static(`${__dirname}/../public`));  // para encontrar la carpeta public
 app.use('/carts', express.static(`${__dirname}/../public`));
 
 app.use(session({
@@ -70,7 +71,7 @@ const main = async () => {
 
     // configurar rutas de nuestro backend
     const routers = [        
-        { path: '/pi/products', router: productsRouter },
+        { path: '/api/products', router: productsRouter },
         { path: '/api/carts', router: cartsRouter },
         { path: '/', router: viewsRouter },
         { path: '/api/sessions', router: sessionRouter },
