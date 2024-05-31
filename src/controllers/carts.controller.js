@@ -161,11 +161,9 @@ class CartsController {
         try {           
             const producto = await this.productsService.getProductById(id)
             const stock = producto.stock
-            if (stock < quantity) {
-                console.log('false')
+            if (stock < quantity) {                
                 return false
-            } else {
-                console.log('true')
+            } else {               
                 return true
             }
         }
@@ -175,8 +173,7 @@ class CartsController {
     }
 
     async finalizarCompra(req, res) {
-        try {
-            console.log("ENTREEEEE finalizar compra")
+        try {            
             let cartId = req.cid
             let carrito = await this.cartsService.getCartByCId(cartId)
             //let usuarioCarrito = req.session.user.email 
@@ -187,18 +184,11 @@ class CartsController {
             let arrayCartPendientes = []
             if (carrito) {
                 await Promise.all(carrito.products.map(async (item) => {
-
-                    const id = item._id._id.toString()
-                    console.log(id)
-
+                    const id = item._id._id.toString()                 
                     let hayStock = await this.HayStock(id, item.quantity)
                     if (hayStock) {
                         const stockAReducir = item.quantity
-
-                        console.log(stockAReducir)
-
                         const result = await this.productsService.updateProduct(id, { $inc: { stock: -stockAReducir } })
-
                         const subtotal = stockAReducir * item._id.price
                         totalCarrito += subtotal
                         cantidadItems += item.quantity
@@ -209,17 +199,17 @@ class CartsController {
                 }))
 
                 const newTicket = {
-                    code: this.generarCodigoUnico(),
-                    purchase_datetime: Date.now(),
+                    code: this.generarCodUnico(),                   
                     amount: totalCarrito,
                     purchaser: usuarioCarrito
                 }
 
                 const ticketCompra = await addTicket(newTicket)  // GENERAR TICKET
-                console.log(ticketCompra)
+             
+                //console.log(arrayCartPendientes)
+                const prodSinComprar = await this.cartsService.updateCartProducts(cartId, arrayCartPendientes)  // quedan en el carrito los productos que no se pudieron comprar
 
-                const prodSinComprar = await this.cartsService.updateCartProducts(cid, arrayCartPendientes)  // quedan en el carrito los productos que no se pudieron comprar
-
+                console.log(cartItemsSinStock)
                 return res.sendSuccess(cartItemsSinStock)  // devuelvo los id de los productos que no se puderon comprar
             }
         }
@@ -228,7 +218,7 @@ class CartsController {
         }
     }
 
-    generarCodigoUnico () {
+    generarCodUnico () {
         return new Date().getTime().toString()
     }
 }
