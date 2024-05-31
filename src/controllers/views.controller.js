@@ -164,8 +164,7 @@ class ViewsController {
     }
 
     async getCartById(req, res) {
-        try {    
-            console.log("entreeee")            
+        try {                         
             const cartId = req.cid
             const cart = await this.cartsService.getCartByCId(cartId)
             if (!cart) {
