@@ -209,7 +209,7 @@ class CartsController {
                 //console.log(arrayCartPendientes)
                 const prodSinComprar = await this.cartsService.updateCartProducts(cartId, arrayCartPendientes)  // quedan en el carrito los productos que no se pudieron comprar
 
-                console.log(cartItemsSinStock)
+                //console.log(cartItemsSinStock)
                 return res.sendSuccess(cartItemsSinStock)  // devuelvo los id de los productos que no se puderon comprar
             }
         }
