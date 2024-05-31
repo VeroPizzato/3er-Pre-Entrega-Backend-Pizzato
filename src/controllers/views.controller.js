@@ -98,19 +98,22 @@ class ViewsController {
 
     async getProductDetail(req, res) {
         try {
-            const prodId = req.pid
+            const prodId = req.pid           
             const product = await this.productsService.getProductById(prodId)
             if (!product) {
                 return product === false
                     ? res.sendNotFoundError({ message: 'Not found!' }, 404)
                     : res.sendServerError({ message: 'Something went wrong!' })
             }
+            const carts = await this.cartsService.getCarts()
+            let cid = carts[0]._id
             let data = {
                 title: 'Product Detail',
                 scripts: ['productoDetail.js'],
                 useSweetAlert: true,
                 styles: ['productos.css'],
                 useWS: false,
+                cid,
                 product
             }
             res.render('detailProduct', data)
@@ -161,8 +164,8 @@ class ViewsController {
     }
 
     async getCartById(req, res) {
-        try {
-            console.log("entreee")
+        try {    
+            console.log("entreeee")            
             const cartId = req.cid
             const cart = await this.cartsService.getCartByCId(cartId)
             if (!cart) {
@@ -178,7 +181,7 @@ class ViewsController {
             }
             res.render('detailCart', data)
         }
-        catch (err) {
+        catch (err) {        
             return res.sendServerError(err)
             // return res.status(500).json({ message: err.message })
         }
