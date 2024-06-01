@@ -13,8 +13,8 @@ class CartDAO {
     }
 
     getCartByCId = async (cid) => {
-        try {
-            const cart = await CartModel.findOne({ _id: cid }).populate('products._id')       
+        try {            
+            const cart = await CartModel.findOne({ _id: cid }).populate('products._id')            
             return cart?.toObject() ?? false
         }
         catch (err) {

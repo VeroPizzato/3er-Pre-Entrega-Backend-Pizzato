@@ -37,7 +37,8 @@ class ViewsRouter extends Router {
 
         this.get('/newProduct', userIsLoggedIn, userIsAdmin, withController((controller, req, res) => controller.newProduct(req, res)))
 
-        this.get('/chat', withController((controller, req, res) => controller.chat(req, res)))     
+        this.get('/chat', withController((controller, req, res) => controller.chat(req, res)))   
+            
     }
 }
 
