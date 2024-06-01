@@ -158,7 +158,21 @@ const initializeStrategy = () => {
                 };
                 return done(null, user);
             }
-         
+
+            if (username === config.SUPER_ADMIN_EMAIL && password === config.SUPER_ADMIN_PASSWORD) {
+                // Datos de sesión para el usuario coder superadmin
+                user = {
+                    _id: "kflshGKSGNasbsgj3dae",
+                    first_name: "Usuario",
+                    last_name: "de CODER",
+                    age: 40,
+                    email: username,
+                    cart: null,
+                    rol: "superadmin"
+                };
+                return done(null, user);
+            }       
+        
             // 1. verificar que el usuario exista en la BD           
             if (!user) {
                 console.log("User doesn't exist")
@@ -182,8 +196,8 @@ const initializeStrategy = () => {
     // simplemente podemos usar su id
     passport.serializeUser((user, done) => {
         // console.log('serialized!', user)
-        if (user.email === config.ADMIN_EMAIL) {
-            // Serialización especial para el usuario 'adminCoder@coder.com'
+        if (user.email === config.ADMIN_EMAIL || user.email === config.SUPER_ADMIN_EMAIL) {
+            // Serialización especial para los usuarios 'adminCoder@coder.com' y 'super@admin.com'
             done(null, { _id: user._id, first_name: user.first_name, last_name: user.last_name, age: user.age, email: user.email, rol: user.rol, cart: user.cart });
         } else {
             done(null, user._id)
@@ -194,8 +208,8 @@ const initializeStrategy = () => {
     // el cual colocará en req.user para que nosotros podamos usar
     passport.deserializeUser(async (id, done) => {
         //console.log('deserialized!', id)
-        if (id.email === config.ADMIN_EMAIL) {
-            // Deserialización especial para el usuario 'adminCoder@coder.com'
+        if (id.email === config.ADMIN_EMAIL || id.email === config.SUPER_ADMIN_EMAIL) {
+            // Deserialización especial para los usuarios 'adminCoder@coder.com' y 'super@admin.com'
             done(null, id);
         } else {
             //const user = await User.findById(id);
