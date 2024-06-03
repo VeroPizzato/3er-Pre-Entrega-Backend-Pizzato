@@ -171,15 +171,26 @@ class ViewsController {
                 return cart === false
                     ? res.sendNotFoundError({ message: 'Not found!' }, 404)
                     : res.sendServerError({ message: 'Something went wrong!' })
+            }       
+            let isCartEmpty = null
+            if (cart.products.length === 0){
+                isCartEmpty = {
+                    icon: "info",
+                    title: "Carrito Vacio",
+                    text: "No hay productos en el carrito!"           
+                } 
             }
+                                   
             let data = {
                 title: 'Cart Detail',
                 styles: ['styles.css'],
+                useSweetAlert: true,
                 useWS: false,
                 cid,
+                isCartEmpty,
                 cart
             }
-            res.render('detailCart', data)
+            res.render('detailCart', data)           
         }
         catch (err) {        
             return res.sendServerError(err)

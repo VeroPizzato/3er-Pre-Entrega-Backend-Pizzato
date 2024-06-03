@@ -5,8 +5,7 @@ const getAllTickets = async () => {
 }
 
 const add_Ticket = async (newTicket) => {    
-    const ticket = ticketModel.create(newTicket)
-    console.log(ticket)
+    const ticket = ticketModel.create(newTicket)   
     return ticket
 }
 

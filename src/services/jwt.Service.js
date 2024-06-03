@@ -7,7 +7,7 @@ class JwtServices {
         this.dao = dao
     }
 
-    async login (email, password) {      
+    async login(email, password) {
         let user
         if (email === config.ADMIN_EMAIL && password === config.ADMIN_PASSWORD) {
             // Datos de sesión para el usuario coder Admin
@@ -18,7 +18,19 @@ class JwtServices {
                 email: config.ADMIN_EMAIL,
                 cart: null,
                 rol: "admin",
-                _id: "jhhasgñjglsargj355ljasg"
+                _id: "jh235hlki23463nkhlo"
+            }
+        }
+        else if (email === config.SUPER_ADMIN_EMAIL && password === config.SUPER_ADMIN_PASSWORD) {
+            // Datos de sesión para el usuario coder Admin
+            user = {
+                first_name: "Usuario",
+                last_name: "de CODER",
+                age: 40,
+                email: config.SUPER_ADMIN_EMAIL,
+                cart: null,
+                rol: "superadmin",
+                _id: "kflshGKSGNasbsgj3dae"
             }
         }
         else {
@@ -35,7 +47,7 @@ class JwtServices {
                 throw new Error('invalid password')
             }
         }
-        return user        
+        return user
     }
 }
 
