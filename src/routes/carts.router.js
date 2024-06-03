@@ -31,7 +31,7 @@ class CartsRouter extends Router {
 
         //this.delete('/:cid', validarCarritoExistente, withController((controller, req, res) => controller.deleteAllProductCart(req, res)))
 
-        this.post('/:cid/purchase', userIsLoggedIn, userIsUser, withController((controller, req, res)  => controller.finalizarCompra(req, res)))      
+        this.get('/:cid/purchase', /*userIsLoggedIn, userIsUser,*/ withController((controller, req, res)  => controller.finalizarCompra(req, res)))      
     }
 }
 
