@@ -165,8 +165,8 @@ class ViewsController {
 
     async getCartById(req, res) {
         try {                         
-            const cartId = req.cid
-            const cart = await this.cartsService.getCartByCId(cartId)
+            const cid = req.cid
+            const cart = await this.cartsService.getCartByCId(cid)
             if (!cart) {
                 return cart === false
                     ? res.sendNotFoundError({ message: 'Not found!' }, 404)
@@ -176,6 +176,7 @@ class ViewsController {
                 title: 'Cart Detail',
                 styles: ['styles.css'],
                 useWS: false,
+                cid,
                 cart
             }
             res.render('detailCart', data)
