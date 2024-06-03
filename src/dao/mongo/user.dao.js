@@ -42,7 +42,7 @@ class UserDAO {
 
     async updateUser(email, pass) {
         try {
-            const result = await UserModel.updateOne({ email: email }, { $set: { password: pass }})
+            const result = await UserModel.updateOne(email, { $set: { password: pass }})
             return result
         }
         catch (err) {
