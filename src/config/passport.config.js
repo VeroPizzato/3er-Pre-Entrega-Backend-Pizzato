@@ -114,7 +114,7 @@ const initializeStrategy = () => {
             }
 
             let user
-            if (username === "adminCodercoder.com") {
+            if (username === config.ADMIN_EMAIL) {
                 return done(null, false)
             }
             // 1. verificar que el usuario exista en la BD
