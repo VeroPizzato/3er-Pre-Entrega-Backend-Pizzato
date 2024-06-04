@@ -156,14 +156,14 @@ class CartsController {
     //         // })
     //     }
     // }
-  
+
     async HayStock(id, quantity) {
-        try {           
+        try {
             const producto = await this.productsService.getProductById(id)
             const stock = producto.stock
-            if (stock < quantity) {                
+            if (stock < quantity) {
                 return false
-            } else {               
+            } else {
                 return true
             }
         }
@@ -173,17 +173,17 @@ class CartsController {
     }
 
     async finalizarCompra(req, res) {
-        try {                               
+        try {
             let cartId = req.cid
             let carrito = await this.cartsService.getCartByCId(cartId)
-            let usuarioCarrito = req.session.user.email             
+            let usuarioCarrito = req.session.user.email
             let totalCarrito = 0
             let cantidadItems = 0
             let cartItemsSinStock = []
             let arrayCartPendientes = []
             if (carrito) {
                 await Promise.all(carrito.products.map(async (item) => {
-                    const id = item._id._id.toString()                 
+                    const id = item._id._id.toString()
                     let hayStock = await this.HayStock(id, item.quantity)
                     if (hayStock) {
                         const stockAReducir = item.quantity
@@ -197,14 +197,15 @@ class CartsController {
                     }
                 }))
 
-                const newTicket = {
-                    code: this.generarCodUnico(),                   
-                    amount: totalCarrito,
-                    purchaser: usuarioCarrito
-                }
+                if (totalCarrito > 0) {
+                    const newTicket = {
+                        code: this.generarCodUnico(),
+                        amount: totalCarrito,
+                        purchaser: usuarioCarrito
+                    }
 
-                const ticketCompra = await addTicket(newTicket)  // GENERAR TICKET
-             
+                    const ticketCompra = await addTicket(newTicket)  // GENERAR TICKET
+                }
                 //console.log(arrayCartPendientes)
                 const prodSinComprar = await this.cartsService.updateCartProducts(cartId, arrayCartPendientes)  // quedan en el carrito los productos que no se pudieron comprar
 
@@ -217,7 +218,7 @@ class CartsController {
         }
     }
 
-    generarCodUnico () {
+    generarCodUnico() {
         return new Date().getTime().toString()
     }
 }
